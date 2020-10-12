@@ -1,0 +1,11 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "The frontend of Assignment 1",
+  "main": "globalRoutes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Paul Amblard & Ilja Stepanov",
+  "license": "ISC"
+}
