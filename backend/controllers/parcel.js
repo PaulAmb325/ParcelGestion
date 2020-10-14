@@ -129,7 +129,7 @@ exports.addParcel = (req, res, next) => {
 
     let postProcessSQL = function (err, result) {
 	if (err) res.status(500).json({err});
-        else res.status(200).json(result);
+        else res.status(200).json(result);console.log(result);
     };
     db.query(sql, values, postProcessSQL);  
 };
@@ -150,6 +150,19 @@ exports.addCustomer = (req, res, next) => {
         else res.status(200).json(result);
     };
     db.query(sql, values, postProcessSQL);   
+};
+
+exports.getLocations = (req, res, next) => {
+    //Use the require here because the other way it is executed before the export is done
+    const {db} = require('../app.js');
+    console.log("oui");
+    let sql = 'SELECT locID, locAddress, city FROM LOCATIONS';
+
+    let postProcessSQL = function (err, result) {
+	if (err) res.status(500).json({err});
+        else res.status(200).json(result);
+    };
+    db.query(sql, postProcessSQL);   
 };
 
 

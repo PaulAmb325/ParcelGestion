@@ -5,6 +5,7 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
     //ROUTES DE L'API
     const getAllParcel = "http://etu-web2.ut-capitole.fr:3004/api/parcel/";
     const getAllCust = "http://etu-web2.ut-capitole.fr:3004/api/parcel/customers";
+    const getAllLocations = "http://etu-web2.ut-capitole.fr:3004/api/parcel/locations";
     const getLocated = "http://etu-web2.ut-capitole.fr:3004/api/parcel/located/";
     const getCustomerParcel = "http://etu-web2.ut-capitole.fr:3004/api/parcel/customers/";
     const getParcelCustomer = "http://etu-web2.ut-capitole.fr:3004/api/parcel/";
@@ -21,26 +22,37 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
     $scope.lastAdded = [];
     $scope.currentParcel = [];
     $scope.currentCustomer = [];
+    $scope.allParcels = [];
+    $scope.allLocations = [];
+    $scope.allCustomers = [];
+    
+    $http.get(getAllLocations).then(function(response) {
+        $scope.allLocations = response.data;
+    });
     
     $http.get(getAllParcel).then(function(response) {
-        $scope.Parcels = response.data;
+        $scope.allParcels = response.data;
+        $scope.Parcels = $scope.allParcels;
         //console.log("oui");
     });
     
     $http.get(getAllCust).then(function(response) {
-        $scope.Customers = response.data;
+        $scope.allCustomers = response.data;
+        $scope.Customers = $scope.allCustomers;
         //console.log("oui");
     });
     
     $scope.resetScopes = function(){
-      console.log("reset start")
+      console.log("reset start");
       $http.get(getAllParcel).then(function(response) {
-        $scope.Parcels = response.data;
+        $scope.allParcels = response.data;
+        $scope.Parcels = $scope.allParcels;
         //console.log("oui");
        });
     
         $http.get(getAllCust).then(function(response) {
-            $scope.Customers = response.data;
+            $scope.allCustomers = response.data;
+            $scope.Customers = $scope.allCustomers;
             //console.log("oui");
         });
         $scope.Locateds = [];
@@ -121,8 +133,13 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
             finalLoc: $scope.parc_newFinalLoc
         };
         $http.post(addParcel,data).then(function(response){
-            console.log(data);
-            $scope.Parcels.push(data);
+            var newParcel = {
+                parcelID: response.data.insertId,
+                weight: data.weight,
+                custID: data.custID,
+                finalLoc: data.finalLoc
+            };
+            $scope.Parcels.push(newParcel);
         });
     };
     
@@ -132,9 +149,34 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
             CustomerLocation: $scope.cust_newCustomerLocation
         };
         $http.post(addCustomer,data).then(function(response){
-            console.log(response.data);
-            $scope.Customers.push(data);
+             var newCustomer = {
+                    CustID: response.data.insertId,
+                    CustName: data.CustName,
+                    CustomerLocation: data.CustomerLocation
+                };
+            $scope.Customers.push(newCustomer);
         });
+    };
+    
+    //Modal Management
+    $scope.openAddParcel = function() {
+        $('.ui.parcel.modal')
+            .modal('show');
+    };
+    
+    $scope.openAddCustomer = function() {
+        $('.ui.customer.modal')
+            .modal('show');
+    };
+    
+    $scope.openAddLocated = function() {
+        $('.ui.located.modal')
+            .modal('show');
+    };
+    
+    $scope.openHelp= function() {
+        $('.ui.help.modal')
+            .modal('show');
     };
 	
 });

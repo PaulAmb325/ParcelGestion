@@ -12,7 +12,8 @@ router.post('/located', ctrlParcel.addLocatParcel);
 
 
 router.get('/customers', ctrlParcel.getAllCustomers);
-//On another page
+//Get all Locations
+router.get('/locations',ctrlParcel.getLocations);
 //See all parcel by customer (customer's parcel)
 router.get('/customers/:id', ctrlParcel.getCustomerParcel);
 //Add a parcel
