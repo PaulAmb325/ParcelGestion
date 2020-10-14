@@ -1,5 +1,6 @@
 locApp = angular.module('angParcelApp', []);
 
+
 locApp.controller('ParcelGestionController',  function($scope, $http) {
 	
     //ROUTES DE L'API
@@ -43,7 +44,6 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
     });
     
     $scope.resetScopes = function(){
-      console.log("reset start");
       $http.get(getAllParcel).then(function(response) {
         $scope.allParcels = response.data;
         $scope.Parcels = $scope.allParcels;
@@ -58,14 +58,12 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
         $scope.Locateds = [];
         $scope.currentCustomer = [];
         $scope.currentParcel = [];
-        console.log("reset end")
     };
     
     $scope.getLocated = function(id){
         var fullUrl = getLocated + id;
         $http.get(fullUrl).then(function(response) {
             $scope.currentParcel = $scope.Parcels.filter(parc => parc.parcelID === id);
-            console.log($scope.currentParcel);
             $scope.Locateds = response.data;
             //Setup the ony customer in the Customer view to be the Customer of the parcel we want to track
             $scope.getParcelCustomer($scope.currentParcel[0].custID);
@@ -76,11 +74,8 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
         var fullUrl = getCustomerParcel + id;
         $http.get(fullUrl).then(function(response) {
             $scope.currentCustomer = $scope.Customers.filter(cust => cust.CustID === id);
-            //console.log($scope.currentCustomer);
             $scope.Parcels = response.data;
-            //if($scope.Parcels[0].CustID !== $scope.currentCustomer[0].CustID){
-              //  $scope.Locateds = [];
-            //}
+          
         });
     };
     
@@ -108,19 +103,16 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
     };
     
     $scope.delLoc = function(parcelID, locID){
-        var fullUrl = delLocated + `?parcelID=${parcelID}` + `?locID=${locID}`;
+        var fullUrl = delLocated + `?parcelID=${parcelID}` + `&locID=${locID}`;
         $http.delete(fullUrl).then(function(response) {
-                $scope.Locateds.splice($scope.Locateds.findIndex(x => x === $scope.lastAdded),1);
+                $scope.Locateds.splice($scope.Locateds.findIndex(x => x.parcelID === parcelID && x.locID === locID),1);
         });
     };
     
     $scope.delLast = function() {
-        //console.log("OUII");
         if($scope.lastAdded.length !== 0){
-            //console.log("OUII",$scope.lastAdded);
             var fullUrl = delLocated + `?parcelID=${$scope.lastAdded.parcelID}` + `&locID=${$scope.lastAdded.locID}`; 
             $http.delete(fullUrl).then(function(response) {
-                //console.log("OUII",response.data);
                 $scope.Locateds.splice($scope.Locateds.findIndex(x => x === $scope.lastAdded),1);
             });
         };    
@@ -160,8 +152,9 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
     
     //Modal Management
     $scope.openAddParcel = function() {
+        
         $('.ui.parcel.modal')
-            .modal('show');
+                .modal('show');
     };
     
     $scope.openAddCustomer = function() {
@@ -178,6 +171,8 @@ locApp.controller('ParcelGestionController',  function($scope, $http) {
         $('.ui.help.modal')
             .modal('show');
     };
+    
+    
 	
 });
 

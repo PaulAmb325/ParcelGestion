@@ -8,10 +8,11 @@
         <script src="/ngparcelGestion.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+        
         <title>Parcel Gestion</title>
     </head>
     <body ng-controller="ParcelGestionController">
-        <button class="ui labeled icon left attached button" style="position: absolute; right: 0px; top: 20px;" ng-click="resetScopes()">Reset<i class="undo icon"></i></button>
+        <button class="ui labeled icon left attached button" style="right: 0px; top: 20px; position:absolute; " ng-click="resetScopes()">Reset<i class="undo icon"></i></button>
         <button class="ui labeled icon left attached button" style="position: absolute; right: 0px; top: 80px;" ng-click="openHelp()"> Help <i class="question icon"></i></button>
         <div>
         <div class="ui two column grid container">
@@ -27,7 +28,7 @@
                     <th scope="col">Location Final</th>
                 </tr>
                 </thead>
-                <tr ng-repeat="parcels in Parcels">
+                <tr ng-repeat="parcels in Parcels" ng-class="{active: parcels.parcelID === currentParcel[0].parcelID}" >
                     <td>{{ parcels.parcelID }}</td>
                     <td>{{ parcels.weight }}</td>
                     <td>{{ parcels.custID }}</td>
@@ -50,7 +51,7 @@
                         <th scope="col">Customer Location</th>
                     </tr>
                     </thead>
-                    <tr ng-repeat="customer in Customers">
+                    <tr ng-repeat="customer in Customers" ng-class="{active: customer.CustID === currentCustomer[0].CustID}">
                         <td>{{ customer.CustID }}</td>
                         <td>{{ customer.CustName }}</td>
                         <td>{{ customer.CustomerLocation }}</td>
@@ -86,7 +87,7 @@
                         <td>{{ located.date }}</td>
                         <td>{{ located.time }}</td>
                         <td>{{ located.operation }}</td>
-                        <td ng-click="">X</td>
+                        <td ng-click="delLoc(located.parcelID,located.locID)"><button class="ui mini icon button"><i class="close icon"></i></button></td>
 		    </tr>
                 </table>
       
@@ -94,65 +95,90 @@
             
         </div>
         
-        <div class="ui parcel modal">
+        <!-- The start of the modals -->
+        
+        <div class="ui parcel modal grid">
             <h1 class="ui row center aligned row header">Add a Parcel</h1>
-            <form ng-submit="addParcel()">
-                <label>Weight <input type="number" size="5" ng-model="parc_newWeight" /></label>
-                        <label>Customer ID <select ng-model="parc_newCustId">
-                                <option ng-repeat="customer in allCustomers" value="{{customer.CustID}}">{{customer.CustID}}</option>
+            <form ng-submit="addParcel()" class="ui row centered aligned form">
+                <div class=" row fields">
+                    <div class="field">
+                        <label>Weight <input type="number" size="5" ng-model="parc_newWeight" /></label>     
+                    </div>
+                    <div class="field">
+                        <label class="field">Customer ID <select ng-model="parc_newCustId">
+                                <option ng-repeat="customer in allCustomers" value="{{customer.CustID}}">{{customer.CustID}} - {{customer.CustName}}</option>
                             </select> 
                         </label>
-                        <label>Final Location <select ng-model="parc_newFinalLoc">
-                                <option ng-repeat="location in allLocations" value="{{location.locID}}">{{location.locID}}</option>
-                    </select>
-                </label>
-	
-		<input type="submit"  value="+" />
+                    </div>
+                    <div class="field">
+                        <label >Final Location <select ng-model="parc_newFinalLoc">
+                                <option ng-repeat="location in allLocations" value="{{location.locID}}">{{location.locID}} - {{location.locAddress}}</option>
+                                </select>
+                        </label>
+                    </div>
+                        
+                <button class="ui icon button" type="submit"><i class="plus icon"></i></button>
+                </div>   
             </form>
         </div>
         
-        <div class="ui customer modal">
-            <h1 >Add a Customer</h1>
-            <form ng-submit="addCustomer()">
-                <label>Customer Name <input type="text" size="5" ng-model="cust_newCustName"/> </label>
-                <label>Customer Location <select ng-model="cust_newCustomerLocation">
-                        <option ng-repeat="location in allLocations" value="{{location.locID}}">{{location.locID}}</option>
-                    </select>
-                </label>
-		  
-                <input type="submit"  value="+" />
+        <div class="ui customer modal grid">
+            <h1 class="ui row center aligned row header">Add a Customer</h1>
+            <form ng-submit="addCustomer()" class="ui row centered aligned form">
+                <div class=" row centered aligned fields ">
+                    <div class=" field">
+                         <label>Customer Name <input type="text" size="5" ng-model="cust_newCustName"/> </label>
+                    </div>
+                    <div class="field">
+                        <label>Customer Location <select ng-model="cust_newCustomerLocation">
+                        <option ng-repeat="location in allLocations" value="{{location.locID}}">{{location.locID}} - {{location.locAddress}}</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button class="ui icon button" type="submit"><i class="plus icon"></i></button>
+                </div>
                 </form>
         </div>
         
-        <div class="ui located modal">
+        <div class="ui located modal grid">
             <h1 class="ui row center aligned row header">Adding Located</h1>
-            <form ng-submit="addLocated()">
-                <label>Parcel <select ng-model="newParcID" >
-                        <option ng-repeat="parcel in allParcels" value="{{parcel.parcelID}}">{{parcel.parcelID}}</option>
-                    </select>
-                </label>
-                <label>Location <select ng-model="newLocID"> 
+             <form class="ui row centered aligned form" ng-submit="addLocated()">
+            <div class="centered fields">
+                <div class="field">
+                    <label>Parcel <select ng-model="newParcID" >
+                            <option ng-repeat="parcel in allParcels" value="{{parcel.parcelID}}">{{parcel.parcelID}}</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="field">
+                    <label>Location <select ng-model="newLocID"> 
                         <option ng-repeat="location in allLocations" value="{{location.locID}}">{{location.locID}}</option>
                     </select>
-                </label>
-                <label>Date <input type="datetime-local" size="30" ng-model="newDate"/></label>
-		<label>Time <input type="datetime-local" size="30" ng-model="newTime"/> </label>
-                <label>Operation <select ng-model="newOperation">
+                    </label>
+                </div>
+                <div class="field">
+                     <label>Date <input type="datetime-local" size="30" ng-model="newDate"/></label>
+                </div>
+                <div class="field">
+                    <label>Time <input type="datetime-local" size="30" ng-model="newTime"/> </label>
+                </div>
+                <div class="field">
+                    <label>Operation <select ng-model="newOperation">
                         <option value="boarding">Boarding</option>
                         <option value="transfer">Transfer</option>
                         <option value="delivery">Delivery</option>
                     </select> 
                 </label>
-		  
-		<input type="submit"  value="+" />
-            </form>
+                </div>
+                <button class="ui icon button" type="submit"><i class="plus icon"></i></button>
+            </div>
+            </form>       
         </div>
         
         <div class="ui help modal">
             <h1 class="ui row center aligned row header">Help</h1>
         </div>
-            
-        
+     <!-- The end of the modals -->      
     </body>
 </html>
 
