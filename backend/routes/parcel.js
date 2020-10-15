@@ -1,27 +1,38 @@
+//First the defining of the express router
 const express = require('express');
 const router = express.Router();
+//We import the functions of the ctrlParcel
 const ctrlParcel = require('../controllers/parcel');
 
+//Route to GET all the Parcel 
 router.get('/',ctrlParcel.getAllParcel);
-//route to delete the last added located
+
+//Route to DELETE a located
 router.delete('/delLocated',ctrlParcel.deleteLocated);
-//Route to see all the located of a parcel
+
+//Route to GET all the located of a parcel
 router.get('/located/:id',ctrlParcel.locateParcel);
-//Route to add a located to a parcel
+
+//Route to POST a located to a parcel
 router.post('/located', ctrlParcel.addLocatParcel);
 
-
+//Route that GET all the Customers
 router.get('/customers', ctrlParcel.getAllCustomers);
-//Get all Locations
+
+//Route that GET all Locations
 router.get('/locations',ctrlParcel.getLocations);
-//See all parcel by customer (customer's parcel)
+
+//Route to GET all parcel by customer (customer's parcel)
 router.get('/customers/:id', ctrlParcel.getCustomerParcel);
-//Add a parcel
+
+//Route to POST a Parcel
 router.post('/',ctrlParcel.addParcel);
-//Add a customer
+
+//Route that POST a Customer
 router.post('/customer',ctrlParcel.addCustomer);
-//Find the parcel's customer:
+
+//Route that get the parcel's customer
 router.get('/:idCustomer',ctrlParcel.getParcelCustomer);
 
-
+//We export the router to be used in app.js
 module.exports = router;

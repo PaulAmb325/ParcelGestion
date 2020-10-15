@@ -3,6 +3,7 @@
 <html ng-app="angParcelApp">
     <head>
         <meta charset="UTF-8">
+        <!-- We used Semantic-ui to do the styling -->
         <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css" rel="stylesheet" type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
         <script src="/ngparcelGestion.js"></script>
@@ -12,12 +13,15 @@
         <title>Parcel Gestion</title>
     </head>
     <body ng-controller="ParcelGestionController">
+        <!-- These two button appear on the right of the screen -->
         <button class="ui labeled icon left attached button" style="right: 0px; top: 20px; position:absolute; " ng-click="resetScopes()">Reset<i class="undo icon"></i></button>
         <button class="ui labeled icon left attached button" style="position: absolute; right: 0px; top: 80px;" ng-click="openHelp()"> Help <i class="question icon"></i></button>
         <div>
+        <!-- The two table PARCELS and CUSTOMERS -->
         <div class="ui two column grid container">
             <div class="column">
                 <div class="ui centered container">
+                    <!-- The table PARCELS -->
                     <h1 class="ui header">Choose a parcel to track  <button class="ui compact button" ng-click="openAddParcel()">Add</button></h1>    
                 <table class="ui centered collapsing compact table">
                 <thead>
@@ -28,6 +32,7 @@
                     <th scope="col">Location Final</th>
                 </tr>
                 </thead>
+                <!-- We used ng-class for conditional styling -->
                 <tr ng-repeat="parcels in Parcels" ng-class="{active: parcels.parcelID === currentParcel[0].parcelID}" >
                     <td>{{ parcels.parcelID }}</td>
                     <td>{{ parcels.weight }}</td>
@@ -42,6 +47,7 @@
             
             <div class="column">
                 <div class="ui centered container">
+                    <!-- The table CUSTOMERS -->
                     <h1 class="ui header">Choose a customer to track  <button class="ui compact button" ng-click="openAddCustomer()" >Add</button></h1>
                 <table class="ui centered collapsing compact table">
                     <thead>
@@ -70,7 +76,7 @@
             </div>
                 
             
-            
+            <!-- The table LOCATEDS -->
                 <table class="ui centered compact table ">
                     <thead>
                     <tr>
@@ -96,7 +102,7 @@
         </div>
         
         <!-- The start of the modals -->
-        
+        <!-- PARCELS Modal -->
         <div class="ui parcel modal grid">
             <h1 class="ui row center aligned row header">Add a Parcel</h1>
             <form ng-submit="addParcel()" class="ui row centered aligned form">
@@ -122,6 +128,7 @@
             </form>
         </div>
         
+        <!-- CUSTOMERS Modal -->
         <div class="ui customer modal grid">
             <h1 class="ui row center aligned row header">Add a Customer</h1>
             <form ng-submit="addCustomer()" class="ui row centered aligned form">
@@ -140,6 +147,7 @@
                 </form>
         </div>
         
+        <!-- LOCATEDS Modal -->
         <div class="ui located modal grid">
             <h1 class="ui row center aligned row header">Adding Located</h1>
              <form class="ui row centered aligned form" ng-submit="addLocated()">
@@ -175,8 +183,16 @@
             </form>       
         </div>
         
-        <div class="ui help modal">
-            <h1 class="ui row center aligned row header">Help</h1>
+        <!-- Help Modal -->
+        <div class="ui help modal grid">
+            <h1 class="ui row center aligned row header">Welcome to ParcelGestion</h1>
+            <div class="ui row padded aligned centered segment">
+                <p >To start to use ParcelGestion just click on <button class="ui mini icon button"><i class="search icon"></i></button> to track and filter the parcel and customer to find the historic of a Parcel</p>
+                 <p >To reset the filters you can use the  <button class="ui labeled icon left attached button">Reset<i class="undo icon"></i></button>
+ button to cleans the scopes</p>
+                 <p >If you done a mistake while adding a Located you can use <button class="ui compact button">Delete Last</button> to delete your last added Located</p>
+            </div>
+           
         </div>
      <!-- The end of the modals -->      
     </body>
